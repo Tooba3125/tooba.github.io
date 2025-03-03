@@ -39,7 +39,10 @@
     .gauge {
       width: 100%;
       height: 250px;
-      margin: 20px 0;
+      margin: 20px auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     canvas {
@@ -220,6 +223,11 @@
         legend: {
           display: true,
           position: "top",
+          labels: {
+            font: {
+              size: 16 // Increase legend font size
+            }
+          }
         },
       },
       scales: {
@@ -229,6 +237,9 @@
           },
           ticks: {
             color: "#333",
+            font: {
+              size: 14 // Increase x-axis font size
+            }
           },
         },
         y: {
@@ -237,6 +248,9 @@
           },
           ticks: {
             color: "#333",
+            font: {
+              size: 14 // Increase y-axis font size
+            }
           },
         },
       },
