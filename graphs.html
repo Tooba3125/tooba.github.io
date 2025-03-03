@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Graphs</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin: 20px auto;
+      max-width: 800px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin: 20px 0;
+      font-size: 28px;
+    }
+
+    h2 {
+      margin: 20px 0 10px 0;
+      font-size: 24px;
+    }
+
+    .gauge {
+      width: 100%;
+      height: 250px;
+      margin: 20px 0;
+    }
+
+    canvas {
+      background: white;
+      border-radius: 10px;
+      margin: 20px 0;
+      height: 250px !important;
+    }
+
+    .weather-status {
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .gauge, canvas {
+        height: 200px !important;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="graphs.html">Graphs</a></li>
+      <li><a href="esp32.html">ESP32 Code</a></li>
+    </ul>
+  </nav>
+
+  <div id="loading" style="text-align: center; margin: 20px;">
+    Loading charts...
+  </div>
+
+  <div class="card">
+    <h1>Weather Dashboard</h1>
+
+    <!-- Temperature Gauge -->
+    <div id="temp-gauge" class="gauge"></div>
+
+    <!-- Humidity Gauge -->
+    <div id="humidity-gauge" class="gauge"></div>
+
+    <!-- Weather Status -->
+    <div class="weather-status" id="weather-status"></div>
+
+    <!-- Line Charts -->
+    <h2>Temperature Over Time</h2>
+    <canvas id="temperatureChart"></canvas>
+
+    <h2>Humidity Over Time</h2>
+    <canvas id="humidityChart"></canvas>
+  </div>
+
+  <script>
+    // Load Google Charts
+    google.charts.load('current', { packages: ['gauge'] });
+    google.charts.setOnLoadCallback(drawGaugeCharts);
+
+    // Sample temperature and humidity values
+    let temperature = 22; // Replace with actual temperature data
+    let humidity = 60; // Replace with actual humidity data
+
+    // Function to draw the gauge charts
+    function drawGaugeCharts() {
+      // Temperature Gauge
+      const tempData = google.visualization.arrayToDataTable([
+        ['Label', 'Value'],
+        ['Temp (°C)', temperature],
+      ]);
+
+      const tempOptions = {
+        width: 400,
+        height: 250,
+        redFrom: 30,
+        redTo: 40,
+        yellowFrom: 20,
+        yellowTo: 30,
+        greenFrom: 0,
+        greenTo: 20,
+        minorTicks: 5,
+      };
+
+      const tempChart = new google.visualization.Gauge(document.getElementById('temp-gauge'));
+      tempChart.draw(tempData, tempOptions);
+
+      // Humidity Gauge
+      const humidityData = google.visualization.arrayToDataTable([
+        ['Label', 'Value'],
+        ['Humidity (%)', humidity],
+      ]);
+
+      const humidityOptions = {
+        width: 400,
+        height: 250,
+        redFrom: 80,
+        redTo: 100,
+        yellowFrom: 60,
+        yellowTo: 80,
+        greenFrom: 0,
+        greenTo: 60,
+        minorTicks: 5,
+      };
+
+      const humidityChart = new google.visualization.Gauge(document.getElementById('humidity-gauge'));
+      humidityChart.draw(humidityData, humidityOptions);
+
+      // Hide loading spinner
+      document.getElementById("loading").style.display = "none";
+
+      // Check for dangerous conditions
+      checkDangerConditions(temperature, humidity);
+    }
+
+    // Function to check for dangerous conditions
+    function checkDangerConditions(temp, humidity) {
+      let alertMessage = "";
+
+      // Temperature danger conditions
+      if (temp >= 30) {
+        alertMessage += "Danger: High temperature detected!\n";
+      } else if (temp <= 10) {
+        alertMessage += "Danger: Low temperature detected!\n";
+      }
+
+      // Humidity danger conditions
+      if (humidity >= 80) {
+        alertMessage += "Danger: High humidity detected!\n";
+      } else if (humidity <= 20) {
+        alertMessage += "Danger: Low humidity detected!\n";
+      }
+
+      // Show alert if dangerous conditions are detected
+      if (alertMessage) {
+        alert(alertMessage);
+      }
+    }
+
+    // Line Charts (Temperature and Humidity Over Time)
+    const temperatureData = {
+      labels: ["00:00", "03:00", "06:00", "09:00", "12:00", "15:00", "18:00", "21:00"],
+      datasets: [{
+        label: "Temperature (°C)",
+        data: [22, 21, 20, 23, 25, 26, 24, 22],
+        borderColor: "rgba(255, 99, 132, 1)",
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        fill: true,
+      }]
+    };
+
+    const humidityData = {
+      labels: ["00:00", "03:00", "06:00", "09:00", "12:00", "15:00", "18:00", "21:00"],
+      datasets: [{
+        label: "Humidity (%)",
+        data: [50, 52, 55, 53, 51, 49, 48, 50],
+        borderColor: "rgba(54, 162, 235, 1)",
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        fill: true,
+      }]
+    };
+
+    // Common chart options
+    const chartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: "top",
+        },
+      },
+      scales: {
+        x: {
+          grid: {
+            display: false,
+          },
+          ticks: {
+            color: "#333",
+          },
+        },
+        y: {
+          grid: {
+            color: "rgba(0, 0, 0, 0.1)",
+          },
+          ticks: {
+            color: "#333",
+          },
+        },
+      },
+    };
+
+    // Create temperature chart
+    const temperatureChart = new Chart(document.getElementById("temperatureChart"), {
+      type: "line",
+      data: temperatureData,
+      options: chartOptions,
+    });
+
+    // Create humidity chart
+    const humidityChart = new Chart(document.getElementById("humidityChart"), {
+      type: "line",
+      data: humidityData,
+      options: chartOptions,
+    });
+  </script>
+</body>
+</html>
