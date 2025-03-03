@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESP32 Code Editor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="graphs.html">Graphs</a></li>
+      <li><a href="esp32.html">ESP32 Code</a></li>
+    </ul>
+  </nav>
+
+  <div class="card">
+    <h1>ESP32 Code Editor</h1>
+    <textarea id="codeEditor" rows="20" cols="80">
+// Paste your ESP32 code here
+void setup() {
+  // Setup code
+}
+
+void loop() {
+  // Main loop code
+}
+    </textarea>
+    <button onclick="saveCode()">Save Code</button>
+  </div>
+
+  <script>
+    function saveCode() {
+      const code = document.getElementById("codeEditor").value;
+      alert("Code saved successfully!\n\n" + code);
+    }
+  </script>
+</body>
+</html>
